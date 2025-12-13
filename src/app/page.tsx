@@ -144,7 +144,7 @@ export default function Home() {
             <FeatureCard 
               icon={<ShieldCheck size={24} />}
               title="Enterprise-Level Security"
-              description="Leveraging blockchain's inherent immutability, all funds are secured by audited smart contracts and transactions are transparently verified."
+              description="Built on audited smart contracts, every donation is cryptographically secure. Donors can track their funds transparently on the blockchain from donation to impact."
             />
             <FeatureCard 
               icon={<Users size={24} />}

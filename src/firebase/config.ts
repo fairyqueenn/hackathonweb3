@@ -1,8 +1,11 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 export const firebaseConfig = {
-  "projectId": "studio-524540891-d2d3a",
-  "appId": "1:969466606366:web:7492c388fc068936420f0f",
-  "apiKey": "AIzaSyB9Og9D7g_WxCyKTLMcECsieQDcV0fVlb4",
-  "authDomain": "studio-524540891-d2d3a.firebaseapp.com",
-  "measurementId": "",
-  "messagingSenderId": "969466606366"
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  measurementId: "",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIRBASE_MESSAGING_SENDER_ID,
 };

@@ -26,12 +26,14 @@ export default function Header() {
 
   const handleLogout = async () => {
     await auth.signOut();
-    router.push('/');
+    router.push("/");
   };
 
   const truncateAddress = (address: string) => {
-    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-  }
+    return `${address.substring(0, 6)}...${address.substring(
+      address.length - 4
+    )}`;
+  };
 
   return (
     <header className="bg-card/80 backdrop-blur-lg sticky top-0 z-50 border-b">
@@ -60,10 +62,10 @@ export default function Header() {
               {user ? (
                 <>
                   {account ? (
-                     <div className="flex items-center gap-2 text-sm font-medium border px-3 py-2 rounded-md">
-                        <Wallet className="h-4 w-4" />
-                        <span>{truncateAddress(account)}</span>
-                      </div>
+                    <div className="flex items-center gap-2 text-sm font-medium border px-3 py-2 rounded-md">
+                      <Wallet className="h-4 w-4" />
+                      <span>{truncateAddress(account)}</span>
+                    </div>
                   ) : (
                     <Button onClick={connectWallet} variant="secondary">
                       <Wallet className="mr-2 h-4 w-4" />
@@ -97,7 +99,10 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[400px]">
               <div className="p-4">
-                <Link href="/" className="flex items-center gap-2 font-bold text-lg mb-8">
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 font-bold text-lg mb-8"
+                >
                   <Logo className="h-8 w-8 text-primary" />
                   <span className="font-headline">CriptoFund</span>
                 </Link>

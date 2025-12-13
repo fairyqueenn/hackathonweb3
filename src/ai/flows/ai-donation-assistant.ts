@@ -48,7 +48,7 @@ const allocateDonationsPrompt = ai.definePrompt({
   prompt: `You are an AI donation assistant. Your task is to allocate a user's monthly donation budget across their preferred causes.
 
   The user's preferred causes are: {{{causes}}}
-  The user's monthly budget is: ${{{monthlyBudget}}}
+  The user's monthly budget is: {{{monthlyBudget}}}
 
   Provide a detailed allocation summary, including the amount allocated to each cause and the percentage of the total budget it represents.
 

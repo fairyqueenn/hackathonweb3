@@ -187,6 +187,7 @@ export default function CampaignPage({ params }: { params: { id: string } }) {
                 placeholder="0.1"
               />
             </div>
+            <p className="text-xs text-center text-foreground/60 px-4">A 5% platform fee will be deducted upon successful campaign completion to support CriptoFund.</p>
           </div>
           <DialogFooter>
             <Button

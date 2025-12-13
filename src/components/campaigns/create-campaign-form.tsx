@@ -21,9 +21,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useToast } from "@/hooks/use-toast";
-import { Rocket, Sparkles } from "lucide-react";
+import { Rocket, Sparkles, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { generateCampaign } from "@/ai/flows/ai-campaign-generator";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const formSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters.").max(100),
@@ -145,6 +146,14 @@ export function CreateCampaignForm() {
                 </span>
               </div>
             </div>
+            
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                CriptoFund charges a 5% platform fee on all successfully funded campaigns.
+              </AlertDescription>
+            </Alert>
+
 
             <FormField
               control={form.control}

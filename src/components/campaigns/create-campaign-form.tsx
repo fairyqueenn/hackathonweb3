@@ -88,13 +88,17 @@ export function CreateCampaignForm() {
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Simulate API call
-    console.log(values);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Simulate API call and smart contract interaction
+    console.log("Creating campaign with values:", values);
+    toast({
+      title: "Submitting to Blockchain...",
+      description: "Please approve the transaction in your wallet.",
+    });
+    await new Promise(resolve => setTimeout(resolve, 3000));
     
     toast({
       title: "Campaign Created! 🎉",
-      description: "Your campaign is now live. Good luck!",
+      description: "Your campaign is now live on the blockchain. Good luck!",
     });
     router.push('/');
   }
@@ -122,7 +126,7 @@ export function CreateCampaignForm() {
                         <Textarea placeholder="e.g., A decentralized platform for artists to sell their work as NFTs" {...field} />
                       </FormControl>
                       <FormDescription>
-                        Describe your campaign idea in a sentence or two.
+                        Describe your campaign idea in a sentence or two. The AI will do the rest.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

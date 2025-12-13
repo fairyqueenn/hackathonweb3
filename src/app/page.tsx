@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Rocket, Bot, ShieldCheck, Users, Zap } from "lucide-react";
+import { Rocket, Bot, ShieldCheck, Users, Zap, BrainCircuit } from "lucide-react";
 import { CampaignGrid } from "@/components/campaigns/campaign-grid";
 import { Campaign } from "@/components/campaigns/campaign-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -130,11 +130,16 @@ export default function Home() {
 
       <section className="container mx-auto">
         <h2 className="text-3xl font-bold font-headline text-center mb-10">Why CriptoFund?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
             <FeatureCard 
               icon={<Bot size={24} />}
-              title="AI-Powered"
-              description="From idea to fully-fledged campaign in seconds. Our AI helps you craft the perfect pitch."
+              title="AI Campaign Craft"
+              description="From a simple idea to a fully-fledged campaign in seconds. Our AI helps you craft the perfect pitch to attract backers."
+            />
+             <FeatureCard 
+              icon={<BrainCircuit size={24} />}
+              title="AI Donation Assistant"
+              description="Set your monthly budget and preferred causes. Our AI automatically allocates your funds to relevant campaigns each month."
             />
             <FeatureCard 
               icon={<ShieldCheck size={24} />}

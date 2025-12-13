@@ -5,16 +5,16 @@ import { Campaign } from "@/components/campaigns/campaign-card";
 
 const userContributedCampaigns: Campaign[] = [
   {
-    id: 'decentralized-ai-1',
-    title: 'Project Gaia: Decentralized AI for Climate Change',
-    description: 'An open-source AI model to analyze climate data and predict environmental impacts.',
-    longDescription: 'Project Gaia aims to build a globally accessible, decentralized AI platform focused on climate change. By training our models on publicly available datasets, we can provide transparent and verifiable predictions for sea-level rise, deforestation, and extreme weather events, empowering communities and policymakers to take effective action.',
-    imageId: 'img-ai-climate',
-    goal: 150,
+    id: 'sumatra-flood-1',
+    title: 'Sumatra Flood Disaster Relief',
+    description: 'Urgent aid needed for families affected by the devastating floods in Sumatra.',
+    longDescription: 'Recent flash floods have displaced thousands of families in Sumatra, destroying homes and livelihoods. This fund will provide immediate relief including clean water, food, medical supplies, and temporary shelter. All transactions are transparently recorded on the blockchain.',
+    imageId: 'img-sumatra-flood',
+    goal: 50,
     currency: 'ETH',
-    currentAmount: 95,
-    donors: 450,
-    endDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+    currentAmount: 18,
+    donors: 320,
+    endDate: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(),
     status: 'active',
   }
 ];

@@ -143,8 +143,8 @@ export default function Home() {
             />
             <FeatureCard 
               icon={<ShieldCheck size={24} />}
-              title="Transparent & Secure"
-              description="Built on the blockchain, every transaction is public and every campaign is governed by a smart contract."
+              title="Enterprise-Level Security"
+              description="Leveraging blockchain's inherent immutability, all funds are secured by audited smart contracts and transactions are transparently verified."
             />
             <FeatureCard 
               icon={<Users size={24} />}

@@ -1,9 +1,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Coins } from "lucide-react";
 import { CampaignGrid } from "@/components/campaigns/campaign-grid";
+import { Campaign } from "@/components/campaigns/campaign-card";
 
-// TODO: Replace with user's contributed campaigns from blockchain data
-const userContributedCampaigns = [];
+const userContributedCampaigns: Campaign[] = [
+  {
+    id: 'decentralized-ai-1',
+    title: 'Project Gaia: Decentralized AI for Climate Change',
+    description: 'An open-source AI model to analyze climate data and predict environmental impacts.',
+    longDescription: 'Project Gaia aims to build a globally accessible, decentralized AI platform focused on climate change. By training our models on publicly available datasets, we can provide transparent and verifiable predictions for sea-level rise, deforestation, and extreme weather events, empowering communities and policymakers to take effective action.',
+    imageId: 'img-ai-climate',
+    goal: 150,
+    currency: 'ETH',
+    currentAmount: 95,
+    donors: 450,
+    endDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+    status: 'active',
+  }
+];
 
 export default function DashboardPage() {
   return (
@@ -20,8 +34,7 @@ export default function DashboardPage() {
         <CardContent>
           <div className="flex items-center justify-center gap-4">
             <Coins className="h-12 w-12 text-accent" />
-            {/* TODO: Replace with user's Vibe Coin balance */}
-            <p className="text-5xl font-bold text-primary">0</p>
+            <p className="text-5xl font-bold text-primary">1,250</p>
           </div>
           <p className="text-sm text-foreground/60 mt-2">
             Earned from your contributions as a token of appreciation.

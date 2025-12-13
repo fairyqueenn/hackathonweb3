@@ -1,4 +1,4 @@
-import type { Campaign } from '@/lib/placeholder-data';
+import { Campaign } from '@/components/campaigns/campaign-card';
 import { CampaignCard } from './campaign-card';
 
 type CampaignGridProps = {

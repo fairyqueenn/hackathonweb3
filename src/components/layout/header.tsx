@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Wallet, Rocket, Bot, Home, User } from "lucide-react";
 import { Logo } from "./logo";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useWallet } from "@/hooks/use-wallet";
 
 const navLinks = [
   { href: "/", label: "Discover", icon: Home },
@@ -16,11 +17,19 @@ const navLinks = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
+  const { account, connectWallet, disconnectWallet } = useWallet();
 
   const handleConnect = () => {
-    setIsConnected(!isConnected);
+    if (account) {
+      disconnectWallet();
+    } else {
+      connectWallet();
+    }
   };
+
+  const truncateAddress = (address: string) => {
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  }
 
   return (
     <header className="bg-card/80 backdrop-blur-lg sticky top-0 z-50 border-b">
@@ -46,7 +55,7 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <Button onClick={handleConnect}>
             <Wallet className="mr-2 h-4 w-4" />
-            {isConnected ? '0x...a1b2' : 'Connect Wallet'}
+            {account ? truncateAddress(account) : 'Connect Wallet'}
           </Button>
 
           {/* Mobile Navigation */}
@@ -75,10 +84,6 @@ export default function Header() {
                       <span className="font-medium">{link.label}</span>
                     </Link>
                   ))}
-                  <hr className="my-2" />
-                  <Link href="/login" className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground/80 hover:bg-muted hover:text-foreground transition-colors" onClick={() => setIsMenuOpen(false)}>
-                    Login / Sign Up
-                  </Link>
                 </nav>
               </div>
             </SheetContent>

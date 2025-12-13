@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { getCampaignById, getImageById } from '@/lib/placeholder-data';
 import { notFound } from 'next/navigation';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -22,6 +21,15 @@ import { Label } from '@/components/ui/label';
 import { BitcoinIcon } from '@/components/icons/bitcoin-icon';
 import { EthereumIcon } from '@/components/icons/ethereum-icon';
 import { useToast } from "@/hooks/use-toast"
+import { Campaign } from '@/components/campaigns/campaign-card';
+
+// TODO: This function will fetch campaign data from the blockchain
+async function getCampaignDataFromBlockchain(id: string): Promise<Campaign | null> {
+  console.log("Fetching campaign data for:", id);
+  // In a real app, you would use ethers.js or viem to call your smart contract
+  // For now, we return null to indicate data needs to be fetched.
+  return null;
+}
 
 
 export default function CampaignPage({ params }: { params: { id: string } }) {
@@ -29,15 +37,46 @@ export default function CampaignPage({ params }: { params: { id: string } }) {
   const [donationAmount, setDonationAmount] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
+  const [campaign, setCampaign] = useState<Campaign | null | undefined>(undefined);
 
-  const campaign = getCampaignById(params.id);
+  useEffect(() => {
+    async function fetchCampaign() {
+      const data = await getCampaignDataFromBlockchain(params.id);
+      if (!data) {
+        // This is a temporary fallback for demonstration purposes
+        console.warn("Using fallback data. Replace with real blockchain data.");
+        setCampaign({
+          id: params.id,
+          title: 'Sample Campaign Title',
+          description: 'This is a sample campaign loaded because no blockchain data was found.',
+          longDescription: 'This is a longer description for a sample campaign. A real Web3 developer needs to integrate smart contracts to fetch live, on-chain data. This would include the funding status, donor count, and end date, all read directly from the blockchain for full transparency.',
+          imageId: 'img-open-source',
+          goal: 100,
+          currency: 'ETH',
+          currentAmount: 42,
+          donors: 50,
+          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'active',
+        });
+      } else {
+        setCampaign(data);
+      }
+    }
+    fetchCampaign();
+  }, [params.id]);
+
+
+  if (campaign === undefined) {
+    return <div>Loading campaign data from the blockchain...</div>
+  }
+  
   if (!campaign) {
     notFound();
   }
 
-  const image = getImageById(campaign.imageId);
   const progress = (campaign.currentAmount / campaign.goal) * 100;
   const daysLeft = Math.max(0, Math.ceil((new Date(campaign.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)));
+  const image = { imageUrl: `https://picsum.photos/seed/${campaign.id}/1200/800`, imageHint: "campaign image" };
 
   const handleDonate = async () => {
     if (!donationAmount || parseFloat(donationAmount) <= 0) {
@@ -49,13 +88,20 @@ export default function CampaignPage({ params }: { params: { id: string } }) {
       return;
     }
     setIsProcessing(true);
-    // Simulate transaction
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // TODO: A Web3 developer needs to implement this function
+    // This will involve:
+    // 1. Getting the user's signer from MetaMask (ethers.js/viem)
+    // 2. Creating an instance of the campaign smart contract
+    // 3. Calling the `donate()` function on the contract with the donation amount
+    console.log(`Submitting transaction: ${donationAmount} ${campaign.currency} to campaign ${campaign.id}`);
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Simulating transaction
+    
     setIsProcessing(false);
     setIsDialogOpen(false);
     toast({
-      title: "Donation Successful!",
-      description: `Thank you for your donation of ${donationAmount} ${campaign.currency}. You've earned Vibe Coins!`,
+      title: "Transaction Sent!",
+      description: `Your donation of ${donationAmount} ${campaign.currency} is being processed on the blockchain.`,
     });
     setDonationAmount('');
   };

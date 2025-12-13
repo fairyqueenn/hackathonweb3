@@ -1,8 +1,11 @@
-import { CampaignGrid } from "@/components/campaigns/campaign-grid";
-import { campaigns } from "@/lib/placeholder-data";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Rocket } from "lucide-react";
+import { CampaignGrid } from "@/components/campaigns/campaign-grid";
+
+// TODO: Replace with live data from blockchain
+const campaigns = [];
+const completedCampaigns = [];
 
 export default function Home() {
   return (
@@ -30,14 +33,14 @@ export default function Home() {
         <h2 className="text-3xl font-bold font-headline text-center">
           Active Campaigns
         </h2>
-        <CampaignGrid campaigns={campaigns.filter(c => c.status === 'active')} />
+        {campaigns.length > 0 ? <CampaignGrid campaigns={campaigns} /> : <p className="text-center text-foreground/70">No active campaigns yet.</p>}
       </section>
 
        <section id="completed-campaigns" className="space-y-6">
         <h2 className="text-3xl font-bold font-headline text-center">
           Successfully Funded
         </h2>
-        <CampaignGrid campaigns={campaigns.filter(c => c.status === 'completed')} />
+        {completedCampaigns.length > 0 ? <CampaignGrid campaigns={completedCampaigns} /> : <p className="text-center text-foreground/70">No completed campaigns yet.</p>}
       </section>
     </div>
   );

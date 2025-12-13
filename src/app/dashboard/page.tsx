@@ -1,10 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Coins } from "lucide-react";
-import { campaigns } from "@/lib/placeholder-data";
 import { CampaignGrid } from "@/components/campaigns/campaign-grid";
 
-// Mock data for user contributions
-const userContributedCampaigns = campaigns.slice(0, 2);
+// TODO: Replace with user's contributed campaigns from blockchain data
+const userContributedCampaigns = [];
 
 export default function DashboardPage() {
   return (
@@ -21,7 +20,8 @@ export default function DashboardPage() {
         <CardContent>
           <div className="flex items-center justify-center gap-4">
             <Coins className="h-12 w-12 text-accent" />
-            <p className="text-5xl font-bold text-primary">1,250</p>
+            {/* TODO: Replace with user's Vibe Coin balance */}
+            <p className="text-5xl font-bold text-primary">0</p>
           </div>
           <p className="text-sm text-foreground/60 mt-2">
             Earned from your contributions as a token of appreciation.

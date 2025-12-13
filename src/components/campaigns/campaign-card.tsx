@@ -2,10 +2,24 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import type { Campaign } from '@/lib/placeholder-data';
-import { getImageById } from '@/lib/placeholder-data';
 import { Users, Target } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+
+// TODO: This type should be updated to match the structure of your Campaign smart contract
+export type Campaign = {
+  id: string;
+  title: string;
+  description: string;
+  longDescription: string;
+  imageId: string; // This might be an IPFS hash
+  goal: number;
+  currency: 'ETH' | 'BTC';
+  currentAmount: number;
+  donors: number;
+  endDate: string; // This will likely be a timestamp from the contract
+  status: 'active' | 'completed' | 'expired';
+};
+
 
 type CampaignCardProps = {
   campaign: Campaign;
@@ -13,7 +27,12 @@ type CampaignCardProps = {
 
 export function CampaignCard({ campaign }: CampaignCardProps) {
   const progress = (campaign.currentAmount / campaign.goal) * 100;
-  const image = getImageById(campaign.imageId);
+  
+  // TODO: Image fetching will need to be adapted, potentially from IPFS
+  const image = {
+      imageUrl: `https://picsum.photos/seed/${campaign.id}/600/400`,
+      imageHint: "campaign image"
+  };
 
   return (
     <Link href={`/campaign/${campaign.id}`} className="block group">

@@ -1,3 +1,52 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "img-green-tech",
+      "description": "A wind turbine in a green field.",
+      "imageUrl": "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxncmVlbiUyMGVuZXJneXxlbnwwfHx8fDE3NjU1NDg1ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "green energy"
+    },
+    {
+      "id": "img-community-art",
+      "description": "A colorful mural on a city wall.",
+      "imageUrl": "https://images.unsplash.com/photo-1484136199491-6603c473c88b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c3RyZWV0JTIwYXJ0fGVufDB8fHx8MTc2NTUwNDAzOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "street art"
+    },
+    {
+      "id": "img-open-source",
+      "description": "Lines of code on a computer screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1753998943619-b9cd910887e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2RlJTIwc2NyZWVufGVufDB8fHx8MTc2NTQ3NjczMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "code screen"
+    },
+    {
+      "id": "img-local-school",
+      "description": "Children in a classroom raising their hands.",
+      "imageUrl": "https://images.unsplash.com/photo-1647451963111-fc00cc4ae830?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjbGFzc3Jvb20lMjBjaGlsZHJlbnxlbnwwfHx8fDE3NjU1MjgyMjN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "classroom children"
+    },
+    {
+      "id": "img-animal-shelter",
+      "description": "A person petting a dog in an animal shelter.",
+      "imageUrl": "https://images.unsplash.com/photo-1542715234-bd0adb4249b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkb2clMjBzaGVsdGVyfGVufDB8fHx8MTc2NTU5MzE3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dog shelter"
+    },
+    {
+      "id": "img-medical-research",
+      "description": "A scientist looking into a microscope.",
+      "imageUrl": "https://images.unsplash.com/photo-1707944745911-64b7d6d1c31d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzY2llbnRpc3QlMjBtaWNyb3Njb3BlfGVufDB8fHx8MTc2NTU2MjQ5N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "scientist microscope"
+    },
+    {
+      "id": "img-space-exploration",
+      "description": "An artist's rendering of a futuristic spaceship.",
+      "imageUrl": "https://images.unsplash.com/photo-1451187863213-d1bcbaae3fa3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzcGFjZSUyMHNoaXB8ZW58MHx8fHwxNzY1NTM5MDI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "space ship"
+    },
+    {
+      "id": "img-disaster-relief",
+      "description": "Volunteers handing out supplies after a natural disaster.",
+      "imageUrl": "https://images.unsplash.com/photo-1641648543997-8244afb0eb86?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkaXNhc3RlciUyMHJlbGllZnxlbnwwfHx8fDE3NjU1NDczOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "disaster relief"
+    }
+  ]
 }

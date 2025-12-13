@@ -1,0 +1,190 @@
+/**
+ * Core Philosophy: This ruleset enforces a strict user-ownership model where all
+ * data is segregated into user-specific data trees. A user can only access,
+ * create, or modify documents that exist under their unique user ID path
+ * (`/users/{userId}`). This path-based security approach ensures that users' data
+ * is isolated and secure by default, preventing unauthorized access between users.
+ *
+ * Data Structure: All application data is hierarchically organized under the
+ * top-level `/users` collection. Each user has a document (`/users/{userId}`)
+ * which acts as the root for their private subcollections, including `campaigns`,
+ * `donations` (nested under campaigns), and `ai_preferences`.
+ *
+ * Key Security Decisions:
+ * - Path-Based Ownership: The primary authorization mechanism is matching the
+ *   `userId` wildcard in the path with the authenticated user's UID. This is
+ *   highly performant as it avoids extra database reads (`get()` calls).
+ * - No Public Data: All collections are private to the owner. There are no
+ *   publicly readable collections, and anonymous access is denied.
+ * - User Listing Disabled: To protect user privacy, it is not possible to list
+ *   all documents in the top-level `/users` collection.
+ * - Relational Integrity: On document creation, rules validate that the
+ *   internal `userId` field matches the `userId` from the path, ensuring data
+ *   consistency. On updates, these key relational fields are enforced as immutable.
+ *
+ * Denormalization for Authorization: The data model leverages path-based ownership
+ * as its core denormalization strategy. The user's UID is part of the path for
+ * every document they own, making authorization checks simple and efficient without
+ * needing to read related documents.
+ *
+ * Structural Segregation: The entire data model is built on structural segregation.
+ * By placing all user-specific data into subcollections under `/users/{userId}`,
+ * we create a clear and secure boundary between each user's data, eliminating the
+ * risk of data leakage through insecure list queries.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -------------------------------------------------------------------------
+    // Helper Functions
+    // -------------------------------------------------------------------------
+
+    /**
+     * Checks if a user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user's UID matches the given userId.
+     * This is the core of the ownership-based security model.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks for ownership on an existing document. Used for update and delete
+     * operations to prevent acting on non-existent data.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * Validates required fields for creating a User document.
+     * Ensures the document ID is consistent with the user's auth UID.
+     */
+    function hasValidUserCreateData(userId) {
+      return request.resource.data.id == userId;
+    }
+
+    /**
+     * Ensures critical relational fields on a User document are not changed.
+     */
+    function isUserImmutable() {
+      return request.resource.data.id == resource.data.id;
+    }
+
+    /**
+     * Validates required fields for creating a Campaign document.
+     * Ensures the campaign's userId points back to the owner's path.
+     */
+    function hasValidCampaignCreateData(userId) {
+      return request.resource.data.userId == userId;
+    }
+
+    /**
+     * Ensures critical relational fields on a Campaign document are not changed.
+     */
+    function isCampaignImmutable() {
+      return request.resource.data.userId == resource.data.userId;
+    }
+
+    /**
+     * Validates required fields for creating a Donation document.
+     * Ensures the donation links to the correct owner and parent campaign.
+     */
+    function hasValidDonationCreateData(userId, campaignId) {
+      return request.resource.data.userId == userId && request.resource.data.campaignId == campaignId;
+    }
+
+    /**
+     * Ensures critical relational fields on a Donation document are not changed.
+     */
+    function isDonationImmutable() {
+      return request.resource.data.userId == resource.data.userId && request.resource.data.campaignId == resource.data.campaignId;
+    }
+
+    /**
+     * Validates required fields for creating an AIPreferences document.
+     * Ensures the preferences document's userId points back to the owner's path.
+     */
+    function hasValidAIPreferencesCreateData(userId) {
+      return request.resource.data.userId == userId;
+    }
+
+    /**
+     * Ensures critical relational fields on an AIPreferences document are not changed.
+     */
+    function isAIPreferencesImmutable() {
+      return request.resource.data.userId == resource.data.userId;
+    }
+
+    // -------------------------------------------------------------------------
+    // Collection Rules
+    // -------------------------------------------------------------------------
+
+    /**
+     * @description Controls access to user profile documents.
+     * @path /users/{userId}
+     * @allow (create) An authenticated user can create their own profile document.
+     * @deny (list) No user, authenticated or not, can list all user profiles.
+     * @principle Enforces self-creation and ownership of a user's root document.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && hasValidUserCreateData(userId);
+      allow update: if isExistingOwner(userId) && isUserImmutable();
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Controls access to user-created campaigns.
+       * @path /users/{userId}/campaigns/{campaignId}
+       * @allow (create) An authenticated user can create a campaign in their own data tree.
+       * @deny (update) A user cannot update a campaign belonging to another user.
+       * @principle Restricts all access to the owner of the data tree.
+       */
+      match /campaigns/{campaignId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && hasValidCampaignCreateData(userId);
+        allow update: if isExistingOwner(userId) && isCampaignImmutable();
+        allow delete: if isExistingOwner(userId);
+
+        /**
+         * @description Controls access to donations for a specific campaign.
+         * @path /users/{userId}/campaigns/{campaignId}/donations/{donationId}
+         * @allow (list) The campaign owner can list all donations made to their campaign.
+         * @deny (create) A user cannot add a donation record to a campaign they do not own.
+         * @principle Restricts management of subcollection data to the parent data owner.
+         */
+        match /donations/{donationId} {
+          allow get: if isOwner(userId);
+          allow list: if isOwner(userId);
+          allow create: if isOwner(userId) && hasValidDonationCreateData(userId, campaignId);
+          allow update: if isExistingOwner(userId) && isDonationImmutable();
+          allow delete: if isExistingOwner(userId);
+        }
+      }
+
+      /**
+       * @description Controls access to a user's AI donation preferences.
+       * @path /users/{userId}/ai_preferences/{aiPreferencesId}
+       * @allow (get) A user can read their own AI preferences.
+       * @deny (get) A user cannot read another user's AI preferences.
+       * @principle Restricts all access to the owner of the data tree.
+       */
+      match /ai_preferences/{aiPreferencesId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && hasValidAIPreferencesCreateData(userId);
+        allow update: if isExistingOwner(userId) && isAIPreferencesImmutable();
+        allow delete: if isExistingOwner(userId);
+      }
+    }
+  }
+}

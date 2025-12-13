@@ -1,0 +1,257 @@
+{
+  "entities": {
+    "Campaign": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Campaign",
+      "type": "object",
+      "description": "Represents a crowdfunding campaign.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the campaign."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Campaign). The user who created the campaign."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the campaign."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the campaign."
+        },
+        "goal": {
+          "type": "number",
+          "description": "The fundraising goal for the campaign."
+        },
+        "startDate": {
+          "type": "string",
+          "description": "The start date of the campaign.",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "description": "The end date of the campaign.",
+          "format": "date-time"
+        },
+        "currentAmount": {
+          "type": "number",
+          "description": "The current amount raised for the campaign."
+        },
+        "currency": {
+          "type": "string",
+          "description": "The currency used for the campaign (e.g., ETH, BTC)."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "title",
+        "description",
+        "goal",
+        "startDate",
+        "endDate",
+        "currentAmount",
+        "currency"
+      ]
+    },
+    "Donation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Donation",
+      "type": "object",
+      "description": "Represents a donation made to a campaign.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the donation."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Donation). The user who made the donation."
+        },
+        "campaignId": {
+          "type": "string",
+          "description": "Reference to Campaign. (Relationship: Campaign 1:N Donation). The campaign to which the donation was made."
+        },
+        "amount": {
+          "type": "number",
+          "description": "The amount of the donation."
+        },
+        "transactionHash": {
+          "type": "string",
+          "description": "The transaction hash of the donation."
+        },
+        "donationDate": {
+          "type": "string",
+          "description": "The date and time the donation was made.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "campaignId",
+        "amount",
+        "transactionHash",
+        "donationDate"
+      ]
+    },
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the CriptoFund platform.  Note: This does NOT include authentication credentials.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user."
+        },
+        "username": {
+          "type": "string",
+          "description": "The username of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the user.",
+          "format": "email"
+        },
+        "metamaskWalletAddress": {
+          "type": "string",
+          "description": "The user's Metamask wallet address."
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "email",
+        "metamaskWalletAddress"
+      ]
+    },
+    "AIPreferences": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AIPreferences",
+      "type": "object",
+      "description": "Represents the donation preferences set by a user for the AI Donation Assistant.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the AI preferences entry."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:1 AIPreferences). The user who set these preferences."
+        },
+        "preferredCauses": {
+          "type": "array",
+          "description": "An array of the user's preferred donation causes.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "monthlyBudget": {
+          "type": "number",
+          "description": "The user's monthly donation budget."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "preferredCauses",
+        "monthlyBudget"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles. The userId must match request.auth.uid.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/campaigns/{campaignId}",
+        "definition": {
+          "entityName": "Campaign",
+          "schema": {
+            "$ref": "#/backend/entities/Campaign"
+          },
+          "description": "Stores campaigns created by a specific user.  The userId must match request.auth.uid.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "campaignId",
+              "description": "The unique identifier for the campaign."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/campaigns/{campaignId}/donations/{donationId}",
+        "definition": {
+          "entityName": "Donation",
+          "schema": {
+            "$ref": "#/backend/entities/Donation"
+          },
+          "description": "Stores donations made to a specific campaign.  The userId and campaignId must match the parent document.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "campaignId",
+              "description": "The unique identifier for the campaign."
+            },
+            {
+              "name": "donationId",
+              "description": "The unique identifier for the donation."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/ai_preferences/{aiPreferencesId}",
+        "definition": {
+          "entityName": "AIPreferences",
+          "schema": {
+            "$ref": "#/backend/entities/AIPreferences"
+          },
+          "description": "Stores AI donation preferences for a specific user. The userId must match request.auth.uid.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "aiPreferencesId",
+              "description": "The unique identifier for the AI preferences."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support the CriptoFund application, emphasizing security, scalability, and maintainability. It leverages path-based ownership for user-specific data and denormalization to ensure authorization independence, critical for robust security rules and atomic operations. Here's a breakdown:\n\n1.  **Users Collection:** `/users/{userId}` stores user profiles. The `userId` is derived from `request.auth.uid`, ensuring only authenticated users can access their data.\n\n2.  **Campaigns Collection:** `/users/{userId}/campaigns/{campaignId}` stores campaigns created by individual users. This hierarchical structure establishes clear ownership. The `campaignId` is a unique identifier for each campaign.  Since a user owns the campaigns under their path, no denormalized authorization data is required.\n\n3.  **Donations Collection:** `/users/{userId}/campaigns/{campaignId}/donations/{donationId}` stores donations made to campaigns.  This nested structure maintains the relationship between users, campaigns, and donations. Since a user owns the campaigns under their path, and donations are nested under campaigns, no denormalized authorization data is required. Even if we wanted to allow the campaign owner to see all donations to their campaign, we would need to store the `userId` of the campaign owner in each donation document to ensure authorization independence. The donation is directly tied to the campaign.\n\n4.  **AI Preferences Collection:** `/users/{userId}/ai_preferences/{aiPreferencesId}` stores AI donation preferences for each user. The one-to-one relationship between users and their AI preferences is enforced through the subcollection structure. No denormalized authorization data is required.\n\n\n**Authorization Independence (Denormalization Strategy):**\n\n*   The primary strategy for achieving authorization independence is using path-based ownership.  The `userId` derived from `request.auth.uid` is used to create hierarchical paths. No `get()` calls are needed to determine ownership.\n\n**QAPs (Rules Are Not Filters):**\n\n*   The structure supports secure `list` operations because of the path-based ownership model.  For example, listing campaigns under `/users/{userId}/campaigns` only returns campaigns owned by that user.  There is no need to filter based on ownership within the rules themselves.\n*   Homogeneous security postures within collections are maintained by the clear separation of user-owned campaigns and donations."
+  }
+}

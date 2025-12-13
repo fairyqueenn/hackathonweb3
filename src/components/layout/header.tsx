@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Wallet, Rocket, Bot, Home, User } from "lucide-react";
+import { Menu, Wallet, Rocket, Bot, Home, User, LogOut } from "lucide-react";
 import { Logo } from "./logo";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useWallet } from "@/hooks/use-wallet";
+import { useUser, useAuth } from "@/firebase";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
   { href: "/", label: "Discover", icon: Home },
@@ -17,14 +19,14 @@ const navLinks = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { account, connectWallet, disconnectWallet } = useWallet();
+  const { account, connectWallet } = useWallet();
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth();
+  const router = useRouter();
 
-  const handleConnect = () => {
-    if (account) {
-      disconnectWallet();
-    } else {
-      connectWallet();
-    }
+  const handleLogout = async () => {
+    await auth.signOut();
+    router.push('/');
   };
 
   const truncateAddress = (address: string) => {
@@ -53,10 +55,37 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <Button onClick={handleConnect}>
-            <Wallet className="mr-2 h-4 w-4" />
-            {account ? truncateAddress(account) : 'Connect Wallet'}
-          </Button>
+          {!isUserLoading && (
+            <>
+              {user ? (
+                <>
+                  {account ? (
+                     <div className="flex items-center gap-2 text-sm font-medium border px-3 py-2 rounded-md">
+                        <Wallet className="h-4 w-4" />
+                        <span>{truncateAddress(account)}</span>
+                      </div>
+                  ) : (
+                    <Button onClick={connectWallet} variant="secondary">
+                      <Wallet className="mr-2 h-4 w-4" />
+                      Connect Wallet
+                    </Button>
+                  )}
+                  <Button variant="ghost" size="icon" onClick={handleLogout}>
+                    <LogOut className="h-5 w-5" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" asChild>
+                    <Link href="/login">Login</Link>
+                  </Button>
+                  <Button asChild>
+                    <Link href="/signup">Sign Up</Link>
+                  </Button>
+                </>
+              )}
+            </>
+          )}
 
           {/* Mobile Navigation */}
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>

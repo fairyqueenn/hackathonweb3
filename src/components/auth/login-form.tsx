@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth, initiateEmailSignIn } from "@/firebase";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +27,9 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const { toast } = useToast();
+  const auth = useAuth();
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,11 +39,12 @@ export function LoginForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    initiateEmailSignIn(auth, values.email, values.password);
     toast({
       title: "Logged In!",
       description: "Welcome back to CriptoFund.",
     });
+    router.push('/dashboard');
   }
 
   return (
@@ -80,8 +86,8 @@ export function LoginForm() {
             />
           </CardContent>
           <CardFooter className="flex-col items-start gap-4">
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? "Logging in..." : "Login"}
             </Button>
             <div className="text-center text-sm text-foreground/70 w-full">
               Don&apos;t have an account?{" "}

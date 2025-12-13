@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,9 +21,9 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useToast } from "@/hooks/use-toast";
-import { Rocket } from "lucide-react";
+import { Rocket, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
-
+import { generateCampaign } from "@/ai/flows/ai-campaign-generator";
 
 const formSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters.").max(100),
@@ -33,11 +34,13 @@ const formSchema = z.object({
   endDate: z.date({
     required_error: "An end date is required.",
   }),
+  idea: z.string().optional(),
 });
 
 export function CreateCampaignForm() {
   const { toast } = useToast();
   const router = useRouter();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,8 +49,42 @@ export function CreateCampaignForm() {
       description: "",
       longDescription: "",
       currency: "ETH",
+      idea: "",
     },
   });
+
+  async function handleGenerate() {
+    const idea = form.getValues("idea");
+    if (!idea || idea.length < 10) {
+      toast({
+        title: "Idea too short",
+        description: "Please provide a more detailed idea for the AI to work with.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsGenerating(true);
+    try {
+      const result = await generateCampaign({ idea });
+      form.setValue("title", result.title);
+      form.setValue("description", result.description);
+      form.setValue("longDescription", result.longDescription);
+      form.setValue("goal", result.goal);
+      toast({
+        title: "Campaign Generated!",
+        description: "The AI has populated the form with a draft. You can now review and edit it.",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Generation Failed",
+        description: "The AI couldn't generate the campaign. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Simulate API call
@@ -66,6 +103,49 @@ export function CreateCampaignForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-6 pt-6">
+            <Card className="bg-card/50 border-primary/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="text-primary" />
+                  Generate with AI
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name="idea"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Campaign Idea</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="e.g., A decentralized platform for artists to sell their work as NFTs" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Describe your campaign idea in a sentence or two.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+              <CardFooter>
+                <Button type="button" onClick={handleGenerate} disabled={isGenerating} className="w-full">
+                  {isGenerating ? "Generating..." : <><Sparkles className="mr-2"/>Generate Campaign Content</>}
+                </Button>
+              </CardFooter>
+            </Card>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">
+                  Or fill manually
+                </span>
+              </div>
+            </div>
+
             <FormField
               control={form.control}
               name="title"

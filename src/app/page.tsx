@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Rocket } from "lucide-react";
+import { Rocket, Bot, ShieldCheck, Users, Zap } from "lucide-react";
 import { CampaignGrid } from "@/components/campaigns/campaign-grid";
 import { Campaign } from "@/components/campaigns/campaign-card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const campaigns: Campaign[] = [
   {
@@ -62,25 +63,61 @@ const completedCampaigns: Campaign[] = [
   },
 ];
 
+const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
+  <Card className="bg-card/50 border-transparent hover:border-primary/50 hover:bg-card transition-all duration-300 transform hover:-translate-y-1">
+    <CardHeader className="flex flex-row items-center gap-4 pb-4">
+      <div className="bg-primary/10 text-primary p-3 rounded-full">{icon}</div>
+      <CardTitle className="text-xl font-headline">{title}</CardTitle>
+    </CardHeader>
+    <CardContent>
+      <p className="text-foreground/70">{description}</p>
+    </CardContent>
+  </Card>
+);
+
 export default function Home() {
   return (
-    <div className="space-y-12">
-      <section className="text-center bg-card p-8 rounded-xl shadow-md">
-        <h1 className="text-4xl md:text-5xl font-bold font-headline tracking-tight text-primary">
-          Decentralized Crowdfunding for a Better Future
-        </h1>
-        <p className="mt-4 max-w-2xl mx-auto text-lg text-foreground/80">
-          Support innovative projects and transparent causes directly with cryptocurrency. Your contribution makes a real difference.
-        </p>
-        <div className="mt-8 flex justify-center gap-4">
-          <Button asChild size="lg">
-            <Link href="#campaigns">Explore Campaigns</Link>
-          </Button>
-          <Button asChild size="lg" variant="secondary">
-            <Link href="/create-campaign">
-              <Rocket className="mr-2" /> Start a Campaign
-            </Link>
-          </Button>
+    <div className="space-y-20">
+      <section className="relative text-center py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent z-0"></div>
+        <div className="absolute inset-x-0 top-0 h-96 w-full bg-[radial-gradient(ellipse_50%_50%_at_50%_-20%,_hsl(var(--primary)/0.3),_transparent)] z-0"></div>
+        
+        <div className="container relative z-10">
+          <h1 className="text-4xl md:text-6xl font-bold font-headline tracking-tight">
+            The Future of Funding is <span className="text-primary">Decentralized</span>.
+          </h1>
+          <p className="mt-6 max-w-2xl mx-auto text-lg text-foreground/80">
+            Launch your vision or fund the next big thing with CriptoFund—the AI-powered, fully transparent crowdfunding platform on the blockchain.
+          </p>
+          <div className="mt-8 flex justify-center gap-4">
+            <Button asChild size="lg" className="btn-primary">
+              <Link href="#campaigns">Explore Campaigns</Link>
+            </Button>
+            <Button asChild size="lg" variant="secondary">
+              <Link href="/create-campaign">
+                <Rocket className="mr-2" /> Start a Campaign
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="container mx-auto text-center">
+        <h2 className="text-3xl font-bold font-headline mb-4">How It Works</h2>
+        <p className="text-foreground/70 max-w-2xl mx-auto mb-10">Three simple steps to bring ideas to life on the blockchain.</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <FeatureCard 
+            icon={<Zap size={24} />} 
+            title="1. Create or Discover" 
+            description="Launch a campaign in minutes with our AI assistant or browse innovative projects." />
+          <FeatureCard 
+            icon={<Rocket size={24} />} 
+            title="2. Fund with Crypto" 
+            description="Donate securely using ETH or BTC via your MetaMask wallet in just a few clicks." />
+          <FeatureCard 
+            icon={<ShieldCheck size={24} />} 
+            title="3. Track the Impact" 
+            description="Follow progress on-chain. All donations and milestones are transparent and verifiable." />
         </div>
       </section>
 
@@ -89,6 +126,27 @@ export default function Home() {
           Active Campaigns
         </h2>
         {campaigns.length > 0 ? <CampaignGrid campaigns={campaigns} /> : <p className="text-center text-foreground/70">No active campaigns yet.</p>}
+      </section>
+
+      <section className="container mx-auto">
+        <h2 className="text-3xl font-bold font-headline text-center mb-10">Why CriptoFund?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <FeatureCard 
+              icon={<Bot size={24} />}
+              title="AI-Powered"
+              description="From idea to fully-fledged campaign in seconds. Our AI helps you craft the perfect pitch."
+            />
+            <FeatureCard 
+              icon={<ShieldCheck size={24} />}
+              title="Transparent & Secure"
+              description="Built on the blockchain, every transaction is public and every campaign is governed by a smart contract."
+            />
+            <FeatureCard 
+              icon={<Users size={24} />}
+              title="Community-Driven"
+              description="Earn 'Vibe Coins' for your contributions and become part of a community that supports innovation."
+            />
+        </div>
       </section>
 
        <section id="completed-campaigns" className="space-y-6">

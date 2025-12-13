@@ -160,6 +160,20 @@ export default function Home() {
         </h2>
         {completedCampaigns.length > 0 ? <CampaignGrid campaigns={completedCampaigns} /> : <p className="text-center text-foreground/70">No completed campaigns yet.</p>}
       </section>
+
+      <section className="text-center py-20 bg-primary/5 rounded-xl">
+        <div className="container">
+          <h2 className="text-3xl md:text-4xl font-bold font-headline">Ready to Make an Impact?</h2>
+          <p className="mt-4 max-w-xl mx-auto text-foreground/80">
+            Join a community that's funding the future. Discover innovative projects and support them with crypto. Your next great contribution is just a click away.
+          </p>
+          <div className="mt-8">
+            <Button asChild size="lg" className="btn-primary">
+              <Link href="#campaigns">Donate Now</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
